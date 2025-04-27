@@ -46,6 +46,7 @@ jobs:
           echo "Raw response from Akeyless:"
           echo "$RESPONSE"
 
-          DB_PASSWORD=$(echo "$RESPONSE" | jq -r '.secrets[0].value')
+          DB_PASSWORD=$(echo "$RESPONSE" | jq -r '."\/git_hub_secret_test_one"')
+
 
           echo "Fetched DB Password: $DB_PASSWORD"
