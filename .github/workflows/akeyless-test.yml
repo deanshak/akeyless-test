@@ -35,7 +35,7 @@ jobs:
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer $TOKEN" \
             --data '{
-              "name": "/secret_for_guthub_actions_test"
+              "name": "/git_hub_secret_test_one"
             }' | jq -r '.value')
 
           echo "Fetched DB Password: $DB_PASSWORD"
