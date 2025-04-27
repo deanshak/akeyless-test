@@ -26,16 +26,26 @@ jobs:
           TOKEN=$(curl -s --request POST "$AKEYLESS_API/auth" \
             --header "Content-Type: application/json" \
             --data '{
+              "access-type": "access_key",
+              "gcp-audience": "akeyless.io",
+              "oci-auth-type": "apikey",
               "access-id": "'"$AKEYLESS_ACCESS_ID"'",
               "access-key": "'"$AKEYLESS_ACCESS_KEY"'"
             }' | jq -r '.token')
 
+          echo "Authentication Token: $TOKEN"
+
           echo "Fetching secret..."
-          DB_PASSWORD=$(curl -s --request POST "$AKEYLESS_API/get-secret-value" \
+          RESPONSE=$(curl -s --request POST "$AKEYLESS_API/get-secret-value" \
             --header "Content-Type: application/json" \
-            --header "Authorization: Bearer $TOKEN" \
             --data '{
-              "name": "/git_hub_secret_test_one"
-            }' | jq -r '.value')
+              "token": "'"$TOKEN"'",
+              "names": ["/git_hub_secret_test_one"]
+            }')
+
+          echo "Raw response from Akeyless:"
+          echo "$RESPONSE"
+
+          DB_PASSWORD=$(echo "$RESPONSE" | jq -r '.secrets[0].value')
 
           echo "Fetched DB Password: $DB_PASSWORD"
